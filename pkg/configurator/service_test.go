@@ -10,7 +10,10 @@ import (
 
 func TestGetConfigData(t *testing.T) {
 	var (
-		originValue = []byte(`{"host": "localhost", "port": 12345}`)
+		originValue = map[string]interface{}{
+			"host": "localhost",
+			"port": "12345",
+		}
 	)
 	catalogs := &mockCatalogRespository{
 		catalogs: map[string]*catalog.Catalog{
@@ -46,6 +49,10 @@ type mockCatalogRespository struct {
 	catalogs map[string]*catalog.Catalog
 }
 
+func (r *mockCatalogRespository) CreateSchemas() (int64, int64, error) {
+	return 0, 0, nil
+}
+
 func (r *mockCatalogRespository) Find(t string) (*catalog.Catalog, error) {
 	if c, ok := r.catalogs[t]; ok {
 		return c, nil
@@ -55,6 +62,10 @@ func (r *mockCatalogRespository) Find(t string) (*catalog.Catalog, error) {
 
 type mockValueRespository struct {
 	values map[int]map[string]*value.Value
+}
+
+func (r *mockValueRespository) CreateSchemas() (int64, int64, error) {
+	return 0, 0, nil
 }
 
 func (r *mockValueRespository) Find(catalogID int, name string) (*value.Value, error) {
